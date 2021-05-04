@@ -20,7 +20,9 @@ Library dependencies:
 """
 
 import pandas as pd
-from pyproj import Proj, transform
+from pyproj import (Proj,
+                    transform,
+                    )
 
 df = pd.read_csv("trees.csv", encoding="latin1")
 xy_df = pd.DataFrame(columns=["lat", "lon"])
@@ -42,10 +44,10 @@ def convert_coords(x, y):
     l.append(y2)
     appended_list.append(l)
     # Uncomment below if you want to have a visual indication of the transformations being done in the terminal window.
-    # print(len(appended_list))
+    print(len(appended_list))
 
 
-def manage_lists():
+def manage_lists(dataframe):
     """This function takes the x and y columns from the loaded data frame and zips them together before transforming
     them via the convert_coords function. Adjust the header names to reflect the column names in your data frame."""
 
@@ -59,6 +61,7 @@ def manage_lists():
         convert_coords(x, y)
 
 
+manage_lists(df)
 latlon = pd.DataFrame(appended_list, columns=["lat", "lon"])
 df = df.join(latlon)
 latlon.to_csv("latlon.csv")
