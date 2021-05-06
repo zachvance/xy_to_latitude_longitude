@@ -2,4 +2,7 @@
 
 A short script to convert XY coordinates into lat and long.
 
-This script will take a CSV file as an input for a pandas data frame, converts the specified X and Y columns into latitude and longitude, and returns two new CSVs; one with only the newly created coordinates, and one being the original input with the new coordinate columns appended.
+This module takes a CSV file as an input, transforming the specified x
+and y coordinate columns into latitude and longitude coordinates. It
+will merge the result with the original CSV. It does not require
+geopandas to work.
