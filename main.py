@@ -1,68 +1,106 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 """
 
-=====================================
+========================================================================
 X & Y to Latitude & Longitude Coordinate Conversion
-=====================================
+========================================================================
 
-:Author: Zach Vance, zvance@yourbus.com / zachariah.vance@live.com
-:Date: 2021-04-17
+This module takes a CSV file as an input, transforming the specified x
+and y coordinate columns into latitude and longitude coordinates. It
+will merge the result with the original CSV. It does not require
+geopandas to work.
 
-This module takes a CSV file as an input, transforming the specified x and y coordinate columns into latitude and
-longitude coordinates. It will generate two new CSVs based on the data; one being only the transformed latitude and
-longitude columns, and the other being the original CSV with the new columns appended.
-
-Library dependencies:
-    - pyproj
-    - pandas
+TODO:
+    - Rewrite functions so as not to iterate over a pandas data frame
+    - Rewrite docstrings after updates
+    - Review function names
 
 """
 
+from config import (
+    FILE_TO_READ,
+    X_HEADER,
+    Y_HEADER,
+    IN_PROJ_TYPE,
+    OUT_PROJ_TYPE,
+    LATITUDE_HEADER,
+    LONGITUDE_HEADER,
+    FILE_TO_WRITE,
+    RUN_DOCTEST,
+)
 import pandas as pd
-from pyproj import (Proj,
-                    transform,
-                    )
-
-df = pd.read_csv("trees.csv", encoding="latin1")
-xy_df = pd.DataFrame(columns=["lat", "lon"])
-x_list = []
-y_list = []
-appended_list = []
+from pyproj import Proj, transform
 
 
 def convert_coords(x, y):
-    """This function takes x and y coordinates as an input, returns those coordinates as latitude and longitude, and
-    appends those values to a master list. Adjust the EPSG settings as necessary."""
+    """
+    Parameters:
+        x (int): An X coordinate as a decimal integer
+        y (int): A Y coordinate as a decimal integer
 
-    in_proj = Proj("epsg:2958")
-    out_proj = Proj("epsg:4326")
-    x1, y1 = x, y
-    x2, y2 = transform(in_proj, out_proj, x1, y1)
-    l = []
-    l.append(x2)
-    l.append(y2)
-    appended_list.append(l)
-    # Uncomment below if you want to have a visual indication of the transformations being done in the terminal window.
-    print(len(appended_list))
+    Returns:
+        A latitude and longitude pair, in the form of a list
 
+    Example:
+    >>> from main import convert_coords
+    >>> convert_coords(643738.9549, 4780141.155)
+    [43.160369755295726, -79.23192578447924]
+    """
+
+    in_proj = Proj(IN_PROJ_TYPE)
+    out_proj = Proj(OUT_PROJ_TYPE)
+    #x1, y1 = x, y
+    x_converted, y_converted = transform(in_proj, out_proj, x, y)
+    coordinate_pair = []
+    coordinate_pair.append(x_converted)
+    coordinate_pair.append(y_converted)
+    return coordinate_pair
 
 def manage_lists(dataframe):
-    """This function takes the x and y columns from the loaded data frame and zips them together before transforming
-    them via the convert_coords function. Adjust the header names to reflect the column names in your data frame."""
 
-    for x in df["X_COORD"]:
+    # TODO:
+    #   - Add a doctest and rewrite docstring
+    #   - Revise list names
+    """This function takes the x and y columns from the loaded data
+    frame and zips them together before transforming them via the
+    convert_coords function. Adjust the header names to reflect the
+    column names in your data frame."""
+
+    x_list = []
+    y_list = []
+    appended_list = []
+
+    for x in dataframe[X_HEADER]:
         x_list.append(x)
 
-    for y in df["Y_COORD"]:
+    for y in dataframe[Y_HEADER]:
         y_list.append(y)
 
     for x, y in zip(x_list, y_list):
-        convert_coords(x, y)
+        appended_list.append(convert_coords(x, y))
+        # Uncomment below if you want to have a visual indication of
+        # the transformations being done in the terminal window.
+        #print(len(appended_list))
+
+    return appended_list
+
+def run_tests():
+    import doctest
+    if RUN_DOCTEST == 1:
+        doctest.testmod(verbose=True)
+        exit()
+
+def main():
+    df = pd.read_csv(FILE_TO_READ)
+    latitude_longitude = pd.DataFrame(manage_lists(df),
+                                      columns=[LATITUDE_HEADER,
+                                               LONGITUDE_HEADER],
+                                      )
+    df = df.join(latitude_longitude)
+    df.to_csv(FILE_TO_WRITE, index=False)
 
 
-manage_lists(df)
-latlon = pd.DataFrame(appended_list, columns=["lat", "lon"])
-df = df.join(latlon)
-latlon.to_csv("latlon.csv")
-df.to_csv("final_df.csv")
+if __name__ == "__main__":
+    run_tests()
+    main()

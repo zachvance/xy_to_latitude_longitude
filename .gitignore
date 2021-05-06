@@ -130,4 +130,4 @@ dmypy.json
 
 # Project specific files
 trees.csv
-lat_long.csv
+output.csv
