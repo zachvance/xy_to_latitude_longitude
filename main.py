@@ -32,6 +32,7 @@ from config import (
 )
 import pandas as pd
 from pyproj import Proj, transform
+from typing import List
 
 
 def convert_coords(x: float, y: float) -> float:
@@ -46,7 +47,7 @@ def convert_coords(x: float, y: float) -> float:
     Example:
     >>> from main import convert_coords
     >>> convert_coords(643738.9549, 4780141.155)
-    [43.160369755295726, -79.23192578447924]
+    [43.16037825643469, -79.23192892861867]
     """
 
     in_proj = Proj(IN_PROJ_TYPE)
@@ -58,7 +59,7 @@ def convert_coords(x: float, y: float) -> float:
     return coordinate_pair
 
 
-def manage_lists(dataframe: pd.DataFrame):
+def manage_lists(dataframe: pd.DataFrame) -> List:
 
     # TODO:
     #   - Add a doctest and rewrite docstring
