@@ -60,13 +60,22 @@ def convert_coords(x: float, y: float) -> float:
 
 
 def manage_lists(dataframe: pd.DataFrame) -> List:
+    """
+    TODO:
+        - Rewrite docstring
+        - Revise list names
+        - Fix iteration of pandas data frames
 
-    # TODO:
-    #   - Add a doctest and rewrite docstring
-    #   - Revise list names
-    """This function takes the x and y columns from the loaded data
+    >>> from main import manage_lists
+    >>> data = {X_HEADER: [643738.9549], Y_HEADER: [4780141.155]}
+    >>> df = pd.DataFrame(data=data)
+    >>> manage_lists(df)
+    [[43.16037825643469, -79.23192892861867]]
+
+    Old docstring: This function takes the x and y columns from the loaded data
     frame and zips them together before transforming them via the
-    convert_coords function."""
+    convert_coords function.
+    """
 
     x_list = []
     y_list = []
