@@ -37,8 +37,8 @@ from pyproj import Proj, transform
 def convert_coords(x: float, y: float) -> float:
     """
     Parameters:
-        x (int): An X coordinate as a decimal integer
-        y (int): A Y coordinate as a decimal integer
+        x (float): An X coordinate as a decimal number
+        y (float): A Y coordinate as a decimal number
 
     Returns:
         A latitude and longitude pair, in the form of a list
@@ -51,7 +51,6 @@ def convert_coords(x: float, y: float) -> float:
 
     in_proj = Proj(IN_PROJ_TYPE)
     out_proj = Proj(OUT_PROJ_TYPE)
-    # x1, y1 = x, y
     x_converted, y_converted = transform(in_proj, out_proj, x, y)
     coordinate_pair = []
     coordinate_pair.append(x_converted)
