@@ -28,12 +28,13 @@ from config import (
     LONGITUDE_HEADER,
     FILE_TO_WRITE,
     RUN_DOCTEST,
+    OUTPUT_TO_CONSOLE,
 )
 import pandas as pd
 from pyproj import Proj, transform
 
 
-def convert_coords(x, y):
+def convert_coords(x: float, y: float) -> float:
     """
     Parameters:
         x (int): An X coordinate as a decimal integer
@@ -50,22 +51,22 @@ def convert_coords(x, y):
 
     in_proj = Proj(IN_PROJ_TYPE)
     out_proj = Proj(OUT_PROJ_TYPE)
-    #x1, y1 = x, y
+    # x1, y1 = x, y
     x_converted, y_converted = transform(in_proj, out_proj, x, y)
     coordinate_pair = []
     coordinate_pair.append(x_converted)
     coordinate_pair.append(y_converted)
     return coordinate_pair
 
-def manage_lists(dataframe):
+
+def manage_lists(dataframe: pd.DataFrame):
 
     # TODO:
     #   - Add a doctest and rewrite docstring
     #   - Revise list names
     """This function takes the x and y columns from the loaded data
     frame and zips them together before transforming them via the
-    convert_coords function. Adjust the header names to reflect the
-    column names in your data frame."""
+    convert_coords function."""
 
     x_list = []
     y_list = []
@@ -79,24 +80,26 @@ def manage_lists(dataframe):
 
     for x, y in zip(x_list, y_list):
         appended_list.append(convert_coords(x, y))
-        # Uncomment below if you want to have a visual indication of
-        # the transformations being done in the terminal window.
-        #print(len(appended_list))
+        if OUTPUT_TO_CONSOLE == 1:
+            print(len(appended_list))
 
     return appended_list
 
+
 def run_tests():
     import doctest
+
     if RUN_DOCTEST == 1:
         doctest.testmod(verbose=True)
         exit()
 
+
 def main():
     df = pd.read_csv(FILE_TO_READ)
-    latitude_longitude = pd.DataFrame(manage_lists(df),
-                                      columns=[LATITUDE_HEADER,
-                                               LONGITUDE_HEADER],
-                                      )
+    latitude_longitude = pd.DataFrame(
+        manage_lists(df),
+        columns=[LATITUDE_HEADER, LONGITUDE_HEADER],
+    )
     df = df.join(latitude_longitude)
     df.to_csv(FILE_TO_WRITE, index=False)
 
