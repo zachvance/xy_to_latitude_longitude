@@ -14,6 +14,3 @@ FILE_TO_WRITE = "output.csv"
 
 # Doctest settings (0 = do not run doctest, 1 = run doctest)
 RUN_DOCTEST = 1
-
-# Console output settings (0 = do not print, 1 = print)
-OUTPUT_TO_CONSOLE = 0
