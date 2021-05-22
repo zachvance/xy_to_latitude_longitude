@@ -2,9 +2,9 @@
 
 """
 
-========================================================================
+=======================================================================
 X & Y to Latitude & Longitude Coordinate Conversion
-========================================================================
+=======================================================================
 
 This module takes a CSV file as an input, transforming the specified x
 and y coordinate columns into latitude and longitude coordinates. It
