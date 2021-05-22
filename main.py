@@ -21,21 +21,15 @@ TODO:
 
 """
 
-from config import (
-    FILE_TO_READ,
-    X_HEADER,
-    Y_HEADER,
-    IN_PROJ_TYPE,
-    OUT_PROJ_TYPE,
-    LATITUDE_HEADER,
-    LONGITUDE_HEADER,
-    FILE_TO_WRITE,
-    RUN_DOCTEST,
-    OUTPUT_TO_CONSOLE,
-)
+from typing import List
+
 import pandas as pd
 from pyproj import Proj, transform
-from typing import List
+
+from config import (FILE_TO_READ, FILE_TO_WRITE, IN_PROJ_TYPE, LATITUDE_HEADER,
+                    LONGITUDE_HEADER, OUT_PROJ_TYPE, OUTPUT_TO_CONSOLE,
+                    RUN_DOCTEST, X_HEADER, Y_HEADER)
+
 
 def convert_coordinates(x: float, y: float) -> List:
     """
