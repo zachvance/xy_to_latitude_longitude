@@ -11,14 +11,6 @@ and y coordinate columns into latitude and longitude coordinates. It
 will merge the result with the original CSV. It does not require
 geopandas to work.
 
-TODO:
-    - Rewrite functions so as not to iterate over a pandas data frame
-    - Rewrite docstrings after updates
-    - Review function names
-    - Rewrite docstring in manage_lists function
-    - Revise list names in manage_lists function
-    - Fix iteration of pandas data frames in manage_lists function
-
 """
 
 from typing import List
@@ -31,7 +23,7 @@ from config import (FILE_TO_READ, FILE_TO_WRITE, IN_PROJ_TYPE, LATITUDE_HEADER,
                     RUN_DOCTEST, X_HEADER, Y_HEADER)
 
 
-def convert_coordinates(x: float, y: float) -> List:
+def convert_coordinate_pair(x: float, y: float) -> List:
     """
     Takes an x and y coordinate pair as arguments, and converts them
     into a latitude and longitude coordinate pair via pyproj's
@@ -46,8 +38,8 @@ def convert_coordinates(x: float, y: float) -> List:
     :rtype: list
 
     Example:
-    >>> from main import convert_coordinates
-    >>> convert_coordinates(643738.9549, 4780141.155)
+    >>> from main import convert_coordinate_pair
+    >>> convert_coordinate_pair(643738.9549, 4780141.155)
     [43.16037825643469, -79.23192892861867]
     """
 
@@ -60,11 +52,11 @@ def convert_coordinates(x: float, y: float) -> List:
     return coordinate_pair
 
 
-def manage_lists(dataframe: pd.DataFrame) -> List:
+def convert_dataframe(dataframe: pd.DataFrame) -> List:
     """
-    Old docstring: This function takes the x and y columns from the
-    loaded data frame and zips them together before transforming them
-    via the convert_coordinates function.
+    Takes the specified x and y columns from the loaded data frame and
+    zips them together before transforming them via the
+    convert_coordinate_pair function.
 
     :param dataframe: A pandas dataframe containing columns of X and Y
     coordinates.
@@ -74,29 +66,14 @@ def manage_lists(dataframe: pd.DataFrame) -> List:
     :rtype: list
 
     Example:
-    >>> from main import manage_lists
+    >>> from main import convert_dataframe
     >>> data = {X_HEADER: [643738.9549], Y_HEADER: [4780141.155]}
     >>> df = pd.DataFrame(data=data)
-    >>> manage_lists(df)
+    >>> convert_dataframe(df)
     [[43.16037825643469, -79.23192892861867]]
     """
 
-    x_list = []
-    y_list = []
-    appended_list = []
-
-    for x in dataframe[X_HEADER]:
-        x_list.append(x)
-
-    for y in dataframe[Y_HEADER]:
-        y_list.append(y)
-
-    for x, y in zip(x_list, y_list):
-        appended_list.append(convert_coordinates(x, y))
-        if OUTPUT_TO_CONSOLE == 1:
-            print(len(appended_list))
-
-    return appended_list
+    return [convert_coordinate_pair(x, y) for x, y in zip(dataframe[X_HEADER], dataframe[Y_HEADER])]
 
 
 def run_tests():
@@ -110,7 +87,7 @@ def run_tests():
 def main():
     df = pd.read_csv(FILE_TO_READ)
     latitude_longitude = pd.DataFrame(
-        manage_lists(df),
+        convert_dataframe(df),
         columns=[LATITUDE_HEADER, LONGITUDE_HEADER],
     )
     df = df.join(latitude_longitude)
