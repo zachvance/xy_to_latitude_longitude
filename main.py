@@ -15,6 +15,9 @@ TODO:
     - Rewrite functions so as not to iterate over a pandas data frame
     - Rewrite docstrings after updates
     - Review function names
+    - Rewrite docstring in manage_lists function
+    - Revise list names in manage_lists function
+    - Fix iteration of pandas data frames in manage_lists function
 
 """
 
@@ -34,19 +37,23 @@ import pandas as pd
 from pyproj import Proj, transform
 from typing import List
 
-
-def convert_coords(x: float, y: float) -> float:
+def convert_coordinates(x: float, y: float) -> List:
     """
-    Parameters:
-        x (float): An X coordinate as a decimal number
-        y (float): A Y coordinate as a decimal number
+    Takes an x and y coordinate pair as arguments, and converts them
+    into a latitude and longitude coordinate pair via pyproj's
+    transform function.
 
-    Returns:
-        A latitude and longitude pair, in the form of a list
+    :param x: An X coordinate as a decimal number.
+    :type x: float
+    :param y: A Y coordinate as a decimal number.
+    :type y: float
+
+    :return: A latitude and longitude pair, in the form of a list.
+    :rtype: list
 
     Example:
-    >>> from main import convert_coords
-    >>> convert_coords(643738.9549, 4780141.155)
+    >>> from main import convert_coordinates
+    >>> convert_coordinates(643738.9549, 4780141.155)
     [43.16037825643469, -79.23192892861867]
     """
 
@@ -61,20 +68,23 @@ def convert_coords(x: float, y: float) -> float:
 
 def manage_lists(dataframe: pd.DataFrame) -> List:
     """
-    TODO:
-        - Rewrite docstring
-        - Revise list names
-        - Fix iteration of pandas data frames
+    Old docstring: This function takes the x and y columns from the
+    loaded data frame and zips them together before transforming them
+    via the convert_coordinates function.
 
+    :param dataframe: A pandas dataframe containing columns of X and Y
+    coordinates.
+    :type dataframe: pd.DataFrame
+
+    :return: A complete list of all converted coordinate pairs.
+    :rtype: list
+
+    Example:
     >>> from main import manage_lists
     >>> data = {X_HEADER: [643738.9549], Y_HEADER: [4780141.155]}
     >>> df = pd.DataFrame(data=data)
     >>> manage_lists(df)
     [[43.16037825643469, -79.23192892861867]]
-
-    Old docstring: This function takes the x and y columns from the loaded data
-    frame and zips them together before transforming them via the
-    convert_coords function.
     """
 
     x_list = []
@@ -88,7 +98,7 @@ def manage_lists(dataframe: pd.DataFrame) -> List:
         y_list.append(y)
 
     for x, y in zip(x_list, y_list):
-        appended_list.append(convert_coords(x, y))
+        appended_list.append(convert_coordinates(x, y))
         if OUTPUT_TO_CONSOLE == 1:
             print(len(appended_list))
 
