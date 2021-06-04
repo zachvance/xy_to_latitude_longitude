@@ -1,4 +1,5 @@
 # X & Y to Latitude & Longitude Conversion
+[![Generic badge](https://img.shields.io/badge/<SUBJECT>-<STATUS>-<COLOR>.svg)](https://shields.io/)
 
 A short script to convert XY coordinates into lat and long.
 
